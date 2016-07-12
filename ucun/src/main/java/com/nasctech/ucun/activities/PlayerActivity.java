@@ -56,40 +56,10 @@ public class PlayerActivity extends Activity implements GridClickListener {
     private HomeHackDialog mHomeHackDialog;
     private BroadcastReceiver newVideosReceiver;
     private ServiceConnection connection;
-//    private BroadcastReceiver screenOffReceiver;
-//    private boolean wasScreenOff;
-//    private boolean wasPlaying;
-//    private Runnable counterRunnable = new Runnable() {
-//        @Override
-//        public void run() {
-//            exitCounter = 0;
-//        }
-//    };
-//    private Runnable hideRunnable = new Runnable() {
-//
-//        @Override
-//        public void run() {
-//            showOrHideBottom();
-//        }
-//    };
-//    private Handler mHandler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-//            super.handleMessage(msg);
-//            switch (msg.what) {
-//                case 2:
-//                    showOrHideBottom();
-//                    break;
-//            }
-//        }
-//    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        wasScreenOff = false;
-//        wasPlaying = false;
-//        registerScreenOffReceiver();
         Log.d("Player", "onCreate");
         if (!io.vov.vitamio.LibsChecker.checkVitamioLibs(this))
             return;
@@ -110,17 +80,6 @@ public class PlayerActivity extends Activity implements GridClickListener {
     private void setScreenAlwaysOn() {
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
-
-//    private void registerScreenOffReceiver() {
-//        screenOffReceiver = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                wasScreenOff = true;
-//            }
-//        };
-//        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
-//        registerReceiver(screenOffReceiver, filter);
-//    }
 
     private void registerVideosReceiver() {
         newVideosReceiver = new BroadcastReceiver() {
@@ -185,10 +144,6 @@ public class PlayerActivity extends Activity implements GridClickListener {
         Log.d("Player", "onDestroy");
         if (mHomeHackDialog != null)
             mHomeHackDialog.dismiss();
-//        if (mHandler != null) {
-//            mHandler.removeMessages(0);
-//            mHandler.removeCallbacksAndMessages(null);
-//        }
     }
 
     @Override
@@ -209,12 +164,10 @@ public class PlayerActivity extends Activity implements GridClickListener {
         disableBlock();
 
         if (videoPlayer.isPlaying()) {
-//            wasPlaying = true;
             pauseOrPlay(null);
         } else {
             showOrHideGrid();
             videoPlayer.setVisibility(View.INVISIBLE);
-//            wasPlaying = false;
         }
     }
 
@@ -224,9 +177,6 @@ public class PlayerActivity extends Activity implements GridClickListener {
         lock();
         disableStatusBar();
         init();
-//        if (wasScreenOff && !wasPlaying) {
-//            selectRandomVideo();
-//        }
         showOrHideGrid();
         Log.d("Player", "onResume");
     }
@@ -276,8 +226,6 @@ public class PlayerActivity extends Activity implements GridClickListener {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getPointerId(getIndex(event)) == 4) {
-//                    mHandler.removeCallbacks(counterRunnable);
-//                    mHandler.postDelayed(counterRunnable, 2000); //you have 2 sec for fast taps
                     exitCounter++;
                     if (exitCounter > 6) {
                         exitCounter = 0;
@@ -300,20 +248,6 @@ public class PlayerActivity extends Activity implements GridClickListener {
         centerView = findViewById(R.id.centerView);
     }
 
-//    private void selectRandomVideo() {
-//        wasScreenOff = false;
-//        Random rnd = new Random();
-//        int index = rnd.nextInt(adapter.getCount());
-//        int randomId = adapter.getItem(index);
-//
-//        videoName = DBHelper.getVideoNameById(randomId);
-//        videoPath = Utils.PATH + videoName;
-//        videoId = randomId;
-//        //showOrHideGrid();
-//        changePlayDrawable();
-//        playVideo();
-//    }
-
     private int getIndex(MotionEvent event) {
         return (event.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
     }
@@ -329,7 +263,6 @@ public class PlayerActivity extends Activity implements GridClickListener {
     }
 
     public void repeat(View v) {
-//        mHandler.removeCallbacks(hideRunnable);
         if (centerView.getVisibility() == View.VISIBLE) {
             showOrHideGrid();
             changePlayDrawable();
@@ -410,12 +343,9 @@ public class PlayerActivity extends Activity implements GridClickListener {
         videoPlayer.setOnPreparedListener(new io.vov.vitamio.MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(io.vov.vitamio.MediaPlayer mp) {
-//                PlayerActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 videoPlayer.setVideoWidth(mp.getVideoWidth());
                 videoPlayer.setVideoHeight(mp.getVideoHeight());
-//                mHandler.removeCallbacks(hideRunnable);
-//                mHandler.postDelayed(hideRunnable, HIDE_TIME);
                 videoPlayer.start();
             }
         });
@@ -478,15 +408,12 @@ public class PlayerActivity extends Activity implements GridClickListener {
                 }
             });
             bottomView.startAnimation(animation);
-//            mHandler.removeCallbacks(hideRunnable);
         } else {
             bottomView.setVisibility(View.VISIBLE);
             bottomView.clearAnimation();
             Animation animation1 = AnimationUtils.loadAnimation(this,
                     R.anim.option_entry_from_bottom);
             bottomView.startAnimation(animation1);
-//            mHandler.removeCallbacks(hideRunnable);
-//            mHandler.postDelayed(hideRunnable, HIDE_TIME);
         }
     }
 

@@ -18,7 +18,7 @@
         android:layout_height="70dp"
         android:layout_alignParentBottom="true"
         android:background="#50000000"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ImageView
             android:id="@+id/repeatView"
@@ -46,13 +46,14 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp">
 
-            <Button
+            <ImageButton
                 android:id="@+id/btn_start_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@null"
+                android:background="@mipmap/ic_menu_white_36dp"
                 android:paddingLeft="20sp"
                 android:paddingRight="20sp"
+                android:layout_gravity="center"
                 android:onClick="showMenu"
                 android:text="Show menu"
                 android:textColor="@android:color/white" />

@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -53,17 +54,13 @@ public class MainActivity extends AppCompatActivity {
     private static final int COUNT_TO_CLOSE = 5;
     private static final int COUNT_OPEN_LOGIN_ACTIVITY = 5;
     private static final String BACKGROUND_IMAGE_FILE_NAME = "/background.png";
-    private static final String TOP_IMAGE_FILE_NAME = "/top_image.png";
-    //    private static final String LEFT_IMAGE_FILE_NAME = "/left_image.png";
-//    private static final String RIGHT_IMAGE_FILE_NAME = "/right_image.png";
     private static final String VIDEO = "/animation.mp4";
-    private static final long INTERVAL = 5 * 60 * 1000;
+    private static final long INTERVAL = 3 * 60 * 1000;
     private int countLeftBtn = 0, countRightBtn = 0;
-    private Button btnLeft, btnRight, btnStartPlayer;
+    private Button btnLeft, btnRight;
+    private ImageButton btnStartPlayer;
     private String path;
-    private RelativeLayout relativeLayout;
-    private ImageView topImageView, rightImageView, background;
-    private LinearLayout leftImage, topLayout;
+    private ImageView background;
     private VideoView videoView;
     private View statusBarView;
     private HomeHackDialog mHomeHackDialog;
@@ -149,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
                     String login = prefs.getString(Const.LOGIN_KEY, "");
                     String password = prefs.getString(Const.PASS_KEY, "");
                     final int placeID = prefs.getInt(Const.PLACE_ID_KEY, -1);
@@ -189,7 +185,6 @@ public class MainActivity extends AppCompatActivity {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
                 String login = prefs.getString(Const.LOGIN_KEY, "");
                 String password = prefs.getString(Const.PASS_KEY, "");
                 final int placeID = prefs.getInt(Const.PLACE_ID_KEY, -1);
@@ -205,13 +200,8 @@ public class MainActivity extends AppCompatActivity {
     private void findView() {
         btnLeft = (Button) findViewById(R.id.btn_left);
         btnRight = (Button) findViewById(R.id.btn_right);
-        btnStartPlayer = (Button) findViewById(R.id.btn_start_menu);
-        relativeLayout = (RelativeLayout) findViewById(R.id.relative_layout);
-//        topImageView = (ImageView) findViewById(R.id.top_image_view);
-//        rightImageView = (ImageView) findViewById(R.id.right_image_view);
-//        leftImage = (LinearLayout) findViewById(R.id.left_image);
+        btnStartPlayer = (ImageButton) findViewById(R.id.btn_start_menu);
         videoView = (VideoView) findViewById(R.id.video_view);
-//        topLayout = (LinearLayout) findViewById(R.id.top_layout);
         background = (ImageView) findViewById(R.id.background);
     }
 
@@ -225,22 +215,7 @@ public class MainActivity extends AppCompatActivity {
         disableStatusBar();
         setScreenAlwaysOn();
 
-        if (isBackgroundExists(path + BACKGROUND_IMAGE_FILE_NAME)) {
-            loadImage(background, R.drawable.background, path + BACKGROUND_IMAGE_FILE_NAME);
-//            topLayout.setVisibility(View.GONE);
-//            rightImageView.setVisibility(View.GONE);
-//            leftImage.setVisibility(View.GONE);
-        } else {
-//            topLayout.setVisibility(View.VISIBLE);
-//            rightImageView.setVisibility(View.VISIBLE);
-//            leftImage.setVisibility(View.VISIBLE);
-
-//            loadImage(topLayout, R.drawable.top_image, path + TOP_IMAGE_FILE_NAME);
-//            loadImage(rightImageView, R.drawable.right_image, path + RIGHT_IMAGE_FILE_NAME);
-
-            loadImage(background, R.drawable.background, path + BACKGROUND_IMAGE_FILE_NAME);
-//            loadImage(leftImage, R.drawable.left_image, path + LEFT_IMAGE_FILE_NAME);
-        }
+        loadImage(background, R.drawable.background, path + BACKGROUND_IMAGE_FILE_NAME);
 
         loadVideo(path + VIDEO);
     }
@@ -250,10 +225,6 @@ public class MainActivity extends AppCompatActivity {
         if (!file.exists()) {
             file.mkdirs();
         }
-    }
-
-    private boolean isBackgroundExists(String path) {
-        return isFileExists(path);
     }
 
     private void loadVideo(String path) {
@@ -275,49 +246,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void setScreenAlwaysOn() {
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-    }
-
-    private void loadImage(RelativeLayout relativeLayout, int resource, String path) {
-        if (isFileExists(path)) {
-            if (Build.VERSION.SDK_INT < 16) {
-                relativeLayout.setBackgroundDrawable(getDrawableFromBitmap(getBitmapFromFile(path)));
-            } else {
-                relativeLayout.setBackground(getDrawableFromBitmap(getBitmapFromFile(path)));
-            }
-        } else {
-            if (Build.VERSION.SDK_INT < 16) {
-                relativeLayout.setBackgroundDrawable(getResources().getDrawable(resource));
-            } else {
-                relativeLayout.setBackground(getResources().getDrawable(resource));
-            }
-        }
-    }
-
-    private void loadImage(LinearLayout linearLayout, int resource, String path) {
-        if (isFileExists(path)) {
-            if (Build.VERSION.SDK_INT < 16) {
-                linearLayout.setBackgroundDrawable(getDrawableFromBitmap(getBitmapFromFile(path)));
-            } else {
-                linearLayout.setBackground(getDrawableFromBitmap(getBitmapFromFile(path)));
-            }
-        } else {
-            if (Build.VERSION.SDK_INT < 16) {
-                linearLayout.setBackgroundDrawable(getResources().getDrawable(resource));
-            } else {
-                linearLayout.setBackground(getResources().getDrawable(resource));
-            }
-        }
-    }
-
-    private Bitmap getBitmapFromFile(String path) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-
-        return BitmapFactory.decodeFile(path, options);
-    }
-
-    private Drawable getDrawableFromBitmap(Bitmap bitmap) {
-        return new BitmapDrawable(getResources(), bitmap);
     }
 
     private void loadImage(ImageView imageView, int resource, String path) {
@@ -408,19 +336,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-//        setActivityToFront();
         disableBlock();
 
         if (timer != null) {
             timer.cancel();
         }
     }
-
-//    private void setActivityToFront() {
-//        ActivityManager activityManager = (ActivityManager) getApplicationContext()
-//                .getSystemService(Context.ACTIVITY_SERVICE);
-//        activityManager.moveTaskToFront(getTaskId(), 0);
-//    }
 
     private void deleteVideoOnFirstLaunch() {
         if (DBHelper.getAllVideos().isEmpty()) {
